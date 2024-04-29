@@ -2,6 +2,9 @@
 
 This project provides an interactive grid-based interface for users to select start and end points, as well as obstacles, and then find a calculated path between the selected points. The backend path planning algorithm is implemented in Java and is connected to the frontend interface using endpoints.
 
+![Image](images/example.png)
+
+
 ## Features
 
 1. **Grid Creation**: Create a grid with a constant width in both the x and y axes.
