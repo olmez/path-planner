@@ -31,6 +31,37 @@ To get started with the project, follow these steps:
 
 5. Click the "Find Path" button to trigger the Java path planning algorithm and visualize the calculated path on the grid.
 
+
+## Configuring Mongo DB
+
+sudo apt install mongodb-clients
+
+### Run the mongodb server
+
+mongod --dbpath ./db --port 27017
+
+### Setup db first
+
+mongo
+
+use admin
+db.createUser({
+    user:"admin",
+    pwd:"abc123",
+    roles:[{role:"userAdminAnyDatabase",db:"admin"}],
+    passwordDigestor:"server"
+})
+
+
+use paths 
+db.createUser({
+  user: "myuser",
+  pwd: "mypass",
+  roles: ["readWrite", "dbAdmin"]
+})
+
+
+
 ## Contributing
 
 Contributions are welcome!

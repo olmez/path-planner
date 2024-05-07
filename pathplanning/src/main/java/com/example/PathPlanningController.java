@@ -1,6 +1,7 @@
 package com.example;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,9 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 class PathPlanningController {
+  private final PathRequestRepository pathRequestRepository;
+  private final PathResponseRepository pathResponseRepository;
+  private final PathPlanningAlgorithm pathPlanningAlgorithm;
 
-  private final PathPlanningAlgorithm pathPlanningAlgorithm =
-      new PathPlanningAlgorithm();
+  @Autowired
+  public PathPlanningController(PathRequestRepository pathRequestRepository,
+                                PathResponseRepository pathResponseRepository) {
+    this.pathRequestRepository = pathRequestRepository;
+    this.pathResponseRepository = pathResponseRepository;
+    this.pathPlanningAlgorithm = new PathPlanningAlgorithm();
+  }
 
   @CrossOrigin(origins = "http://localhost:3000")
   @PostMapping("/api/path-planning-endpoint")
@@ -21,7 +30,19 @@ class PathPlanningController {
         request.getGridSizeX(), request.getGridSizeY(), request.getStart(),
         request.getEnd(), request.getBlackCells(), request.getCellSize());
 
-    PathResponse response = new PathResponse(path);
-    return response;
+    PathRequestEntity pathRequestEntity = new PathRequestEntity();
+    pathRequestEntity.setGridSizeX(request.getGridSizeX());
+    pathRequestEntity.setGridSizeY(request.getGridSizeY());
+    pathRequestEntity.setStart(request.getStart());
+    pathRequestEntity.setEnd(request.getEnd());
+    pathRequestEntity.setBlackCells(request.getBlackCells());
+    pathRequestEntity.setCellSize(request.getCellSize());
+    pathRequestRepository.save(pathRequestEntity);
+
+    PathResponseEntity pathResponseEntity = new PathResponseEntity();
+    pathResponseEntity.setPlannedPath(path);
+    pathResponseRepository.save(pathResponseEntity);
+
+    return new PathResponse(path);
   }
 }
